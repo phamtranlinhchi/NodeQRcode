@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Scan</title>
+        <script
+            src="https://unpkg.com/html5-qrcode"
+            type="text/javascript"
+        ></script>
+    </head>
+    <body>
+        <div style="width: 400px" id="reader"></div>
+
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+            const socket = io();
+
+            function postData(url, data) {
+                return new Promise((resolve, reject) => {
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json, text/plain, /',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    })
+                        .then((res) => {
+                            return resolve(res.json());
+                        })
+                        .catch((err) => {
+                            return reject(err);
+                        });
+                });
+            }
+
+            async function onScanSuccess(decodedText, decodedResult) {
+                // handle the scanned code as you like, for example:
+                // console.log(decodedText);
+                const data = JSON.parse(decodedText);
+                console.log(data);
+
+                // html5QrcodeScanner.clear();
+                await alert(
+                    `Scan successfully information of ${data.full_name}`
+                );
+                await postData('http://localhost:3000/', data).then(
+                    await socket.emit('candidate info', data)
+                );
+            }
+
+            let html5QrcodeScanner = new Html5QrcodeScanner(
+                'reader',
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                /* verbose= */ false
+            );
+            html5QrcodeScanner.render(onScanSuccess);
+        </script>
+    </body>
+</html>
