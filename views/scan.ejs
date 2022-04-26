@@ -41,7 +41,7 @@
                 // handle the scanned code as you like, for example:
                 // console.log(decodedText);
                 const data = JSON.parse(decodedText);
-                console.log(data);
+                // console.log(data);
 
                 // html5QrcodeScanner.clear();
                 await alert(
@@ -50,6 +50,10 @@
                 await postData('http://localhost:3000/', data).then(
                     await socket.emit('candidate info', data)
                 );
+                // socket.on('candidate info', function (data) {
+                //     console.log(data);
+                //     if (data === '') alert('Candidate existed');
+                // });
             }
 
             let html5QrcodeScanner = new Html5QrcodeScanner(

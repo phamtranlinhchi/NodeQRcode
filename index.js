@@ -73,6 +73,8 @@ app.post(
 
 io.on('connection', (socket) => {
     socket.on('candidate info', async (data) => {
+        if (await Candidate.isCandidateExisted(data))
+            return io.emit('candidate info', '');
         io.emit('candidate info', data);
     });
 });

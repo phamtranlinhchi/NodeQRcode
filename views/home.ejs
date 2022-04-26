@@ -36,6 +36,7 @@
             const socket = io();
             const list = document.getElementById('list');
             socket.on('candidate info', function (data) {
+                if (data === '') return;
                 const info = document.createElement('tr');
                 info.innerHTML = `
                     <td>${data.full_name}</td>
